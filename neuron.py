@@ -8,15 +8,16 @@ class Neuron():
         self.weights = Value(initialize_weights((number_of_inputs)))
         self.bias = Value(initialize_weights((1))) if bias else None
         self.input = np.zeros((number_of_inputs))
+        self.output = 0.0
         self.grad = 0.0
         self.name = name
 
     def __call__(self, input):
         self.input = input
-        output = np.sum(self.weights * input)
+        self.output = np.sum(self.weights * input)
         if self.bias:
-            output += self.bias
-        return output
+            self.output += self.bias
+        return self.output
 
     def zero_grad(self):
         self.grad = 0.0

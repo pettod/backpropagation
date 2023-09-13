@@ -31,7 +31,7 @@ class Nngraph():
             )
 
     def add_single_layer_node(self, current_node_name, j, neuron):
-        node_text = r"+ | value {:.2}\ngrad {:.2}".format(neuron.input[j], neuron.grad)
+        node_text = r"+ | value {:.2}\ngrad {:.2}".format(neuron.output, neuron.grad)
 
         # Node
         self.dot.node(

@@ -5,6 +5,8 @@ from neuron import Neuron
 class Layer:
     def __init__(self, inputs, outputs, name):
         self.name = name
+        self.inputs = inputs
+        self.outputs = outputs
         self.neurons = [Neuron(inputs, f"{self.name}_neuron_{i}") for i in range(outputs)]
 
     def __call__(self, input):
