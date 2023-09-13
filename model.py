@@ -12,6 +12,8 @@ class Model(Base_Model):
             bias,
             loss_function,
         ):
+        if number_layers == 1:
+            features = number_of_outputs
         self.loss_function = loss_function
         self.model = []
         for i in range(number_layers):
