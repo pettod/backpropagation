@@ -9,7 +9,11 @@ class Nngraph():
             comment="ML model graph",
             filename=f"{filename}.gv",
             format="png",
-            graph_attr={"rankdir": "LR", "dpi": "300"},
+            graph_attr={
+                "rankdir": "LR",  # Left to right graph
+                "dpi": "300",  # DPI for the png file
+                "splines": "false",  # Straight lines/edges between the nodes
+            },
         )
         self.layers = model.model
         self.loss_function = loss_function
@@ -21,7 +25,7 @@ class Nngraph():
             self.dot.node(
                 previous_layer_node_name,
                 "input {:.2}\n".format(input),
-                style="filled",
+                style="rounded,filled",
                 fillcolor="#FFF2CC",
                 color="#D6B656",
             )
@@ -32,7 +36,7 @@ class Nngraph():
             current_node_name,
             "{%s}" % node_text,
             shape="record",
-            style="filled",
+            style="rounded,filled",
             fillcolor="#F8CECC",
             color="#B85450",
         )
@@ -49,22 +53,32 @@ class Nngraph():
                     weight_node_name,
                     "{%s}" % node_text,
                     shape="record",
-                    style="filled",
+                    style="rounded,filled",
                     fillcolor="#D5E8D4",
                     color="#82B366",
                     fontsize="10pt",
                 )
-                self.dot.edge(previous_layer_node_name, weight_node_name)
+                self.dot.edge(
+                    previous_layer_node_name,
+                    weight_node_name,
+                    headport="w",
+                    tailport="e",
+                )
 
                 # Add layer cluster
                 with self.dot.subgraph(name=f"cluster_{i}") as cluster:
                     cluster.attr(
                         label=f"Layer {i+1}",
-                        style="filled",
+                        style="rounded,filled",
                         fillcolor="#EBEBEB",
                         color="#666666",
                     )
-                    cluster.edge(weight_node_name, current_node_name)
+                    cluster.edge(
+                        weight_node_name,
+                        current_node_name,
+                        headport="w",
+                        tailport="e",
+                    )
 
             # Add weight texts the edges
             else:
@@ -80,7 +94,7 @@ class Nngraph():
             "loss",
             "loss {:.2}\ngrad {:.2}".format(
                 self.loss_function.loss, self.loss_function.grad),
-            style="filled",
+            style="rounded,filled",
             fillcolor="#DAE8FC",
             color="#6C8EBF",
         )
