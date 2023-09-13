@@ -6,6 +6,7 @@ class MSE_Loss():
         self.loss = 0.0
         self.grad = 0.0
         self.input = 0.0
+        self.name = "loss_MSE"
 
     def __call__(self, y_pred, y_true):
         self.input = y_pred

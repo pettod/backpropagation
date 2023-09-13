@@ -4,11 +4,12 @@ from weight_initialization import initialize_weights
 
 
 class Neuron():
-    def __init__(self, number_of_inputs, bias=False):
+    def __init__(self, number_of_inputs, name, bias=False):
         self.weights = Value(initialize_weights((number_of_inputs)))
         self.bias = Value(initialize_weights((1))) if bias else None
         self.input = np.zeros((number_of_inputs))
         self.grad = 0.0
+        self.name = name
 
     def __call__(self, input):
         self.input = input

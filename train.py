@@ -31,8 +31,9 @@ def main():
             optimizer.step()
     print()
     print("Predictions")
+    print("GT, prediction")
     for input, gt in zip(input_data, ground_truth):
-        print(model(input), gt)
+        print(gt, model(input))
 
     plt.plot(losses)
     plt.show()
