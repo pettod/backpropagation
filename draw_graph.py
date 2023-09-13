@@ -63,7 +63,8 @@ class Nngraph():
     def add_loss(self, current_node_name):
         self.dot.node(
             "loss",
-            "loss {:.2}\ngrad {:.2}".format(loss_function.loss, loss_function.grad),
+            "loss {:.2}\ngrad {:.2}".format(
+                self.loss_function.loss, self.loss_function.grad),
             style="filled",
             fillcolor="#448BFF",
         )

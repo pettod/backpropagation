@@ -1,10 +1,14 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from tqdm import tqdm
 
 from loss_functions import MSE_Loss
 from model import Model
 from optimizers import Gradient_Decent
-from draw_graph import draw_graph
+from draw_graph import Nngraph
+
+
+DEBUG = True
 
 
 def main():
@@ -18,13 +22,14 @@ def main():
     learning_rate = 0.001
     optimizer = Gradient_Decent(learning_rate, model)
 
-    losses = []
-
     # Train
     epochs = 50
-    for epoch in range(epochs):
+    losses = []
+    for epoch in tqdm(range(epochs)):
         for input, gt in zip(input_data, ground_truth):
-            #draw_graph(model, loss_function)
+            if DEBUG:
+                nngraph = Nngraph(model, loss_function, f"graph_{epoch:04}")
+                nngraph.draw_graph()
             prediction = model(input)
             loss = loss_function(prediction, gt)
             losses.append(loss)
