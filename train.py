@@ -7,26 +7,27 @@ from optimizers import Gradient_Decent
 
 
 def main():
-    input = np.random.uniform(-0.5, 0.5, 4)
-    ground_truth = np.array(1)
+    input_data = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+    ground_truth = np.array([[0], [1], [1], [0]])
 
     loss_function = MSE_Loss()
-    model = Model(input.shape)
+    model = Model(input_data[0].shape)
     learning_rate = 0.01
     optimizer = Gradient_Decent(learning_rate, model)
 
     losses = []
 
     # Train
-    epochs = 20
+    epochs = 200
     for epoch in range(epochs):
-        prediction = model(input)
-        loss = loss_function(prediction, ground_truth)
-        losses.append(loss)
-        print(model.model[0].weights, prediction)
-        model.zero_grad()
-        model.backward(loss_function)
-        optimizer.step()
+        for input, gt in zip(input_data, ground_truth):
+            prediction = model(input)
+            loss = loss_function(prediction, gt)
+            losses.append(loss)
+            print(model.model[0].weights, prediction)
+            model.zero_grad()
+            model.backward(loss_function)
+            optimizer.step()
     print()
     print(prediction, ground_truth)
 
