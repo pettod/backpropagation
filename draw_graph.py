@@ -3,8 +3,12 @@ from model import Model
 from loss_functions import MSE_Loss
 
 
-def draw_graph(model, loss_function):
-    dot = graphviz.Digraph(comment="ML model graph", filename="graph.gv")
+def draw_graph(model, loss_function, weight_boxes=True):
+    dot = graphviz.Digraph(
+        comment="ML model graph",
+        filename="graph.gv",
+        graph_attr={"rankdir": "LR"},
+    )
     layers = model.model
 
     for i, layer in enumerate(layers):
@@ -33,7 +37,9 @@ def draw_graph(model, loss_function):
             # Add edges from previous layer to current
             for k, weight in enumerate(neuron.weights.data):
                 previous_layer_node_name = f"layer_{i}_out_{k}"
-                if True:
+
+                # Create box nodes for weights
+                if weight_boxes:
                     weight_node_name = f"{previous_layer_node_name}_{current_node_name}"
                     dot.node(
                         weight_node_name,
@@ -45,6 +51,8 @@ def draw_graph(model, loss_function):
                     )
                     dot.edge(previous_layer_node_name, weight_node_name)
                     dot.edge(weight_node_name, current_node_name)
+
+                # Add weight texts the edges
                 else:
                     dot.edge(
                         previous_layer_node_name,
@@ -57,14 +65,10 @@ def draw_graph(model, loss_function):
     dot.node(
         "loss",
         "loss {:.2}\ngrad {:.2}".format(loss_function.loss, loss_function.grad),
-                        style="filled",
+        style="filled",
         fillcolor="#448BFF",
     )
-    dot.edge(
-        current_node_name,
-        "loss",
-        label="",
-    )
+    dot.edge(current_node_name, "loss")
     dot.view()
 
 
