@@ -29,6 +29,7 @@ class Nngraph():
                 style="filled",
                 fillcolor="#FFF2CC",
                 color="#D6B656",
+                fontsize="10pt",
             )
 
     def add_single_layer_node(self, current_node_name, j, neuron):
@@ -42,6 +43,7 @@ class Nngraph():
             style="rounded,filled",
             fillcolor="#F8CECC",
             color="#B85450",
+            fontsize="10pt",
         )
 
         # Node bias
@@ -131,6 +133,7 @@ class Nngraph():
             style="rounded,filled",
             fillcolor="#DAE8FC",
             color="#6C8EBF",
+            fontsize="10pt",
         )
         self.dot.edge(
             current_node_name,
@@ -150,6 +153,7 @@ class Nngraph():
             style="filled",
             fillcolor="#FFD2B0",
             color="#C48E00",
+            fontsize="10pt",
         )
         with self.dot.subgraph(name=f"cluster_loss") as cluster:
             cluster.attr(
