@@ -7,5 +7,7 @@ class Gradient_Decent():
         self.model = model
 
     def step(self):
-        for neuron in self.model.model:
-            neuron.weights = Value(neuron.weights - self.learning_rate * neuron.weights.grad)
+        for layer in self.model.model:
+            for neuron in layer.neurons:
+                neuron.weights = Value(
+                    neuron.weights - self.learning_rate * neuron.weights.grad)
