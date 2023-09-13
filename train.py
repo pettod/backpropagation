@@ -11,27 +11,21 @@ from draw_graph import Nngraph
 DEBUG = False
 
 
+def target_function(input_data):
+    def f(x):
+        return (0.3*x[0] + 0.7*x[1]) + 0.2
+    return np.array([[f(input_sample)] for input_sample in input_data])
+
+
 def main():
-    #input_data = np.array([[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0]])
-    #ground_truth = np.array([[0.0], [0.5], [-0.5], [0.0]])
-    #input_data = np.array([[0.0, 0.0], [1.0, 1.0], [2.0, 2.0], [3.0, 3.0]])
-    #ground_truth = np.array([[0.0], [0.2], [0.4], [0.6]])
-    input_data = np.array([[0.4, 0.3]])
-    ground_truth = np.array([[0.35]])
+    input_data = np.random.uniform(-1, 1, (50, 2))
+    ground_truth = target_function(input_data)
 
-    # Normalize input data
-    #input_data /= input_data.max()
-    #input_data -= input_data.mean()
-
-    # Normalize ground truth
-    #ground_truth /= ground_truth.max()
-    #ground_truth -= ground_truth.mean()
-    
     number_of_inputs = len(input_data[0])
     number_of_outputs = len(ground_truth[0])
-    number_layers = 5
+    number_layers = 1
     features = 2
-    bias = False
+    bias = True
     loss_function = MSE_Loss()
     model = Model(
         number_of_inputs,
@@ -45,7 +39,7 @@ def main():
     optimizer = Gradient_Decent(learning_rate, model)
 
     # Train
-    epochs = 10000
+    epochs = 1000
     losses = []
     for epoch in tqdm(range(epochs)):
         for i, (input, gt) in enumerate(zip(input_data, ground_truth)):
@@ -58,16 +52,18 @@ def main():
                 nngraph = Nngraph(model, loss_function, f"graph_{epoch:04}_{i:04}")
                 nngraph.draw_graph()
             optimizer.step()
-    print()
-    print("Predictions")
-    print("GT, prediction")
-    for input, gt in zip(input_data, ground_truth):
-        print(input, gt, model(input))
+    #print()
+    #print("Predictions")
+    #print("GT, prediction")
+    #for input, gt in zip(input_data, ground_truth):
+    #    print(input, gt, model(input))
 
     plt.plot(losses)
-    plt.xlabel("Epochs")
+    plt.xlabel("Iterations")
     plt.ylabel("Loss")
     plt.show()
 
+    nngraph = Nngraph(model, loss_function, f"graph_final")
+    nngraph.draw_graph(view=True)
 
 main()
