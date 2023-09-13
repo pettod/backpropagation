@@ -16,14 +16,18 @@ def draw_graph(model, loss_function):
                     previous_layer_node_name = f"layer_{i}_out_{k}"
                     dot.node(
                         previous_layer_node_name,
-                        "input {:.2}\n".format(input)
+                        "input {:.2}\n".format(input),
+                        style="filled",
+                        color="#FDFFA5",
                     )
 
             # Add single layer node
             current_node_name = f"layer_{i+1}_out_{j}"
             dot.node(
                 current_node_name,
-                "value {:.2}\ngrad {:.2}".format(neuron.input[j], neuron.grad)
+                "value {:.2}\ngrad {:.2}".format(neuron.input[j], neuron.grad),
+                style="filled",
+                color="#FF4444",
             )
 
             # Add edges from previous layer to current
@@ -38,17 +42,19 @@ def draw_graph(model, loss_function):
     # Add loss
     dot.node(
         "loss",
-        "loss {:.2}\ngrad {:.2}".format(loss_function.loss, loss_function.grad)
+        "loss {:.2}\ngrad {:.2}".format(loss_function.loss, loss_function.grad),
+                        style="filled",
+        color="#448BFF",
     )
     dot.edge(
         current_node_name,
         "loss",
-        label=""
+        label="",
     )
     dot.view()
 
 
 if __name__ == "__main__":
-    model = Model(2, 1)
     loss_function = MSE_Loss()
+    model = Model(2, 1, loss_function)
     draw_graph(model, loss_function)
