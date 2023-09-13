@@ -2,3 +2,5 @@
 *.gv
 *.pdf
 *.pyc
+*.png
+*.svg

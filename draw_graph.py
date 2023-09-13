@@ -3,11 +3,12 @@ from model import Model
 from loss_functions import MSE_Loss
 
 
-def draw_graph(model, loss_function, weight_boxes=True):
+def draw_graph(model, loss_function, filename="graph", weight_boxes=True):
     dot = graphviz.Digraph(
         comment="ML model graph",
-        filename="graph.gv",
-        graph_attr={"rankdir": "LR"},
+        filename=f"{filename}.gv",
+        format="png",
+        graph_attr={"rankdir": "LR", "dpi": "300"},
     )
     layers = model.model
 
@@ -69,7 +70,7 @@ def draw_graph(model, loss_function, weight_boxes=True):
         fillcolor="#448BFF",
     )
     dot.edge(current_node_name, "loss")
-    dot.view()
+    dot.render(directory="graphs", view=False)
 
 
 if __name__ == "__main__":
