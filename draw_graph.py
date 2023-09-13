@@ -22,7 +22,8 @@ class Nngraph():
                 previous_layer_node_name,
                 "input {:.2}\n".format(input),
                 style="filled",
-                fillcolor="#FDFFA5",
+                fillcolor="#FFF2CC",
+                color="#D6B656",
             )
 
     def add_single_layer_node(self, current_node_name, j, neuron):
@@ -32,7 +33,8 @@ class Nngraph():
             "{%s}" % node_text,
             shape="record",
             style="filled",
-            fillcolor="#FF4444",
+            fillcolor="#F8CECC",
+            color="#B85450",
         )
 
     def add_edges_from_previous_layer_to_current(self, current_node_name, neuron, i):
@@ -48,7 +50,8 @@ class Nngraph():
                     "{%s}" % node_text,
                     shape="record",
                     style="filled",
-                    fillcolor="#64FF73",
+                    fillcolor="#D5E8D4",
+                    color="#82B366",
                     fontsize="10pt",
                 )
                 self.dot.edge(previous_layer_node_name, weight_node_name)
@@ -56,9 +59,10 @@ class Nngraph():
                 # Add layer cluster
                 with self.dot.subgraph(name=f"cluster_{i}") as cluster:
                     cluster.attr(
-                        fillcolor="#ffdfbb",
                         label=f"Layer {i+1}",
-                        style="filled"
+                        style="filled",
+                        fillcolor="#EBEBEB",
+                        color="#666666",
                     )
                     cluster.edge(weight_node_name, current_node_name)
 
@@ -77,7 +81,8 @@ class Nngraph():
             "loss {:.2}\ngrad {:.2}".format(
                 self.loss_function.loss, self.loss_function.grad),
             style="filled",
-            fillcolor="#448BFF",
+            fillcolor="#DAE8FC",
+            color="#6C8EBF",
         )
         self.dot.edge(current_node_name, "loss")
 
