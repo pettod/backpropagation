@@ -32,6 +32,8 @@ class Nngraph():
 
     def add_single_layer_node(self, current_node_name, j, neuron):
         node_text = r"+ | value {:.2}\ngrad {:.2}".format(neuron.input[j], neuron.grad)
+
+        # Node
         self.dot.node(
             current_node_name,
             "{%s}" % node_text,
@@ -41,12 +43,26 @@ class Nngraph():
             color="#B85450",
         )
 
+        # Node bias
+        if neuron.bias:
+            self.dot.node(
+                "{}_bias".format(current_node_name),
+                "bias {:.2}".format(float(neuron.bias.data)),
+                shape="record",
+                style="rounded,filled",
+                fillcolor="#E1D5E7",
+                color="#9673A6",
+            )
+
     def add_edges_from_previous_layer_to_current(self, current_node_name, neuron, i):
+        neuron_bias_edge_added = False
         for k, weight in enumerate(neuron.weights.data):
             previous_layer_node_name = f"layer_{i}_out_{k}"
 
             # Create box nodes for weights
             if self.weight_boxes:
+
+                # Create weight node
                 weight_node_name = f"{previous_layer_node_name}_{current_node_name}"
                 node_text = r"* | weight {:.2}\ngrad {:.2}".format(weight, neuron.weights.grad[k])
                 self.dot.node(
@@ -58,6 +74,8 @@ class Nngraph():
                     color="#82B366",
                     fontsize="10pt",
                 )
+
+                # Connect weight to the input
                 self.dot.edge(
                     previous_layer_node_name,
                     weight_node_name,
@@ -73,12 +91,24 @@ class Nngraph():
                         fillcolor="#EBEBEB",
                         color="#666666",
                     )
+
+                    # Connect weight to the output node
                     cluster.edge(
                         weight_node_name,
                         current_node_name,
                         headport="w",
                         tailport="e",
                     )
+
+                    # Connect bias
+                    if neuron.bias and not neuron_bias_edge_added:
+                        neuron_bias_edge_added = True
+                        cluster.edge(
+                            "{}_bias".format(current_node_name),
+                            current_node_name,
+                            headport="w",
+                            tailport="e",
+                        )
 
             # Add weight texts the edges
             else:
