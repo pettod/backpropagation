@@ -52,7 +52,15 @@ class Nngraph():
                     fontsize="10pt",
                 )
                 self.dot.edge(previous_layer_node_name, weight_node_name)
-                self.dot.edge(weight_node_name, current_node_name)
+
+                # Add layer cluster
+                with self.dot.subgraph(name=f"cluster_{i}") as cluster:
+                    cluster.attr(
+                        fillcolor="#ffdfbb",
+                        label=f"Layer {i+1}",
+                        style="filled"
+                    )
+                    cluster.edge(weight_node_name, current_node_name)
 
             # Add weight texts the edges
             else:
