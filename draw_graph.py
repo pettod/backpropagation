@@ -24,8 +24,9 @@ class Nngraph():
             previous_layer_node_name = f"layer_{i}_out_{k}"
             self.dot.node(
                 previous_layer_node_name,
-                "input {:.2}\n".format(input),
-                style="rounded,filled",
+                r"input\n{:.2}".format(input),
+                shape="record",
+                style="filled",
                 fillcolor="#FFF2CC",
                 color="#D6B656",
             )
@@ -121,15 +122,48 @@ class Nngraph():
                 )
 
     def add_loss(self, current_node_name):
+        node_text = r"f(x) | loss {:.2}\ngrad {:.2}".format(
+                self.loss_function.loss, self.loss_function.grad)
         self.dot.node(
             "loss",
-            "loss {:.2}\ngrad {:.2}".format(
-                self.loss_function.loss, self.loss_function.grad),
+            "{%s}" % node_text,
+            shape="record",
             style="rounded,filled",
             fillcolor="#DAE8FC",
             color="#6C8EBF",
         )
-        self.dot.edge(current_node_name, "loss")
+        self.dot.edge(
+            current_node_name,
+            "loss",
+            headport="w",
+            tailport="e",
+        )
+
+    def add_ground_truth(self):
+        ground_truth_label = r"ground truth"
+        for gt_element in self.loss_function.y_true:
+            ground_truth_label += r"\n{:.2}".format(gt_element)
+        self.dot.node(
+            "ground_truth",
+            ground_truth_label,
+            shape="record",
+            style="filled",
+            fillcolor="#FFD2B0",
+            color="#C48E00",
+        )
+        with self.dot.subgraph(name=f"cluster_loss") as cluster:
+            cluster.attr(
+                label="label",
+                style="invisible",
+                constraint="false",
+            )
+            cluster.edge(
+                "ground_truth",
+                "loss",
+                headport="w",
+                tailport="e",
+            )
+
 
     def draw_graph(self, view=False):
         for i, layer in enumerate(self.layers):
@@ -140,6 +174,7 @@ class Nngraph():
                 self.add_single_layer_node(current_node_name, j, neuron)
                 self.add_edges_from_previous_layer_to_current(current_node_name, neuron, i)
         self.add_loss(current_node_name)
+        self.add_ground_truth()
         self.dot.render(directory="graphs", view=view)
 
 
@@ -159,4 +194,4 @@ if __name__ == "__main__":
         loss_function,
     )
     nngraph = Nngraph(model, loss_function)
-    nngraph.draw_graph(True)
+    nngraph.draw_graph(view=True)
