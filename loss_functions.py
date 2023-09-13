@@ -17,12 +17,10 @@ class MSE_Loss():
         return self.loss
 
     def mse_derivative(self, x):
-        return 2 * x
+        return -2 * x  # Explain this, why negative
 
     def backward(self):
-        #d_neuron = self.mse_derivative(self.loss) * self.loss
-        #self.grad += np.sum(self.input * d_neuron)
-        self.input_grad += self.mse_derivative(self.loss)
+        self.input_grad += float(np.sum(self.mse_derivative((self.y_true - self.input))))
 
     def zero_grad(self):
         self.input_grad = 0.0

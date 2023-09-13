@@ -29,7 +29,7 @@ def main():
     
     number_of_inputs = len(input_data[0])
     number_of_outputs = len(ground_truth[0])
-    number_layers = 1
+    number_layers = 5
     features = 2
     bias = False
     loss_function = MSE_Loss()
@@ -41,11 +41,11 @@ def main():
         bias,
         loss_function,
     )
-    learning_rate = 0.001
+    learning_rate = 0.01
     optimizer = Gradient_Decent(learning_rate, model)
 
     # Train
-    epochs = 1000
+    epochs = 10000
     losses = []
     for epoch in tqdm(range(epochs)):
         for i, (input, gt) in enumerate(zip(input_data, ground_truth)):

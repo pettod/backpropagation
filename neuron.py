@@ -24,11 +24,3 @@ class Neuron():
         self.weights.zero_grad()
         if self.bias:
             self.bias.zero_grad()
-
-    def backward(self, output_neuron):
-        # (d loss / d neuron) = (d loss / d output) * (d output / d neuron)
-        #self.grad += np.sum(self.weights.grad)
-        #self.weights.grad = self.grad
-        #if self.bias:
-        #    self.bias.grad = self.grad
-        pass

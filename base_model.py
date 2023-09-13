@@ -12,6 +12,8 @@ class Base_Model():
                 for output_neuron in output_neurons:
                     input_neuron.grad += output_neuron.weights.data[j] * output_neuron.weights.grad[j]
                 input_neuron.weights.grad += input_neuron.input * input_neuron.grad
+                if input_neuron.bias:
+                    input_neuron.bias.grad += input_neuron.grad
             output_neurons = layer.neurons
 
     def zero_grad(self):
