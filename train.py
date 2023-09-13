@@ -17,8 +17,20 @@ def main():
     #input_data = np.array([[0, 0], [1, 1], [2, 2], [3, 3]])
     #ground_truth = np.array([[0], [0.2], [0.4], [0.6]])
 
+    number_of_inputs = len(input_data[0])
+    number_of_outputs = len(ground_truth[0])
+    number_layers = 2
+    features = 2
+    bias = False
     loss_function = MSE_Loss()
-    model = Model(len(input_data[0]), len(ground_truth[0]), loss_function)
+    model = Model(
+        number_of_inputs,
+        number_of_outputs,
+        number_layers,
+        features,
+        bias,
+        loss_function,
+    )
     learning_rate = 0.001
     optimizer = Gradient_Decent(learning_rate, model)
 

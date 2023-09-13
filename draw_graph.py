@@ -144,7 +144,19 @@ class Nngraph():
 
 
 if __name__ == "__main__":
+    number_of_inputs = 2
+    number_of_outputs = 1
+    number_layers = 2
+    features = 3
+    bias = False
     loss_function = MSE_Loss()
-    model = Model(2, 1, loss_function)
+    model = Model(
+        number_of_inputs,
+        number_of_outputs,
+        number_layers,
+        features,
+        bias,
+        loss_function,
+    )
     nngraph = Nngraph(model, loss_function)
     nngraph.draw_graph(True)
