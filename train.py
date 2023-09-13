@@ -1,22 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from base_model import Base_Model
 from loss_functions import MSE_Loss
-from neuron import Neuron
+from model import Model
 from optimizers import Gradient_Decent
-
-
-class Model(Base_Model):
-    def __init__(self, number_of_inputs):
-        self.model = [
-            Neuron(number_of_inputs),
-        ]
-
-    def forward(self, x):
-        for neuron in self.model:
-            x = neuron(x)
-        return x
 
 
 def main():

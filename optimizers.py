@@ -1,4 +1,4 @@
-from neuron import Value
+from value import Value
 
 
 class Gradient_Decent():
