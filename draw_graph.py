@@ -163,7 +163,9 @@ class Nngraph():
         )
 
 
-    def draw_graph(self, view=False):
+    def draw_graph(self, view=False, filename=None):
+        if filename:
+            self.dot.filename = f"{filename}.gv"
         for i, layer in enumerate(self.layers):
             for j, neuron in enumerate(layer.neurons):
                 current_node_name = f"layer_{i+1}_out_{j}"

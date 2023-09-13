@@ -18,9 +18,11 @@ def target_function(input_data):
 
 
 def main():
+    # Data
     input_data = np.random.uniform(-1, 1, (50, 2))
     ground_truth = target_function(input_data)
 
+    # Model
     number_of_inputs = len(input_data[0])
     number_of_outputs = len(ground_truth[0])
     number_layers = 1
@@ -39,6 +41,7 @@ def main():
     optimizer = Gradient_Decent(learning_rate, model)
 
     # Train
+    nngraph = Nngraph(model, loss_function)
     epochs = 1000
     losses = []
     for epoch in tqdm(range(epochs)):
@@ -49,8 +52,7 @@ def main():
             model.zero_grad()
             model.backward()
             if DEBUG:
-                nngraph = Nngraph(model, loss_function, f"graph_{epoch:04}_{i:04}")
-                nngraph.draw_graph()
+                nngraph.draw_graph(filename=f"graph_{epoch:04}_{i:04}")
             optimizer.step()
     #print()
     #print("Predictions")
@@ -63,7 +65,6 @@ def main():
     plt.ylabel("Loss")
     plt.show()
 
-    nngraph = Nngraph(model, loss_function, f"graph_final")
-    nngraph.draw_graph(view=True)
+    nngraph.draw_graph(view=True, filename=f"graph_final")
 
 main()
