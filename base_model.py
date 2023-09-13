@@ -11,3 +11,6 @@ class Base_Model():
     def zero_grad(self):
         for neuron in self.model:
             neuron.zero_grad()
+
+    def forward(self, *args, **kwds):
+        pass
