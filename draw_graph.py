@@ -47,11 +47,12 @@ class Nngraph():
         if neuron.bias:
             self.dot.node(
                 "{}_bias".format(current_node_name),
-                "bias {:.2}".format(float(neuron.bias.data)),
+                r"bias {:.2}\ngrad {:.2}".format(float(neuron.bias.data), float(neuron.bias.grad)),
                 shape="record",
                 style="rounded,filled",
                 fillcolor="#E1D5E7",
                 color="#9673A6",
+                fontsize="10pt",
             )
 
     def add_edges_from_previous_layer_to_current(self, current_node_name, neuron, i):
@@ -130,7 +131,7 @@ class Nngraph():
         )
         self.dot.edge(current_node_name, "loss")
 
-    def draw_graph(self):
+    def draw_graph(self, view=False):
         for i, layer in enumerate(self.layers):
             for j, neuron in enumerate(layer.neurons):
                 current_node_name = f"layer_{i+1}_out_{j}"
@@ -139,11 +140,11 @@ class Nngraph():
                 self.add_single_layer_node(current_node_name, j, neuron)
                 self.add_edges_from_previous_layer_to_current(current_node_name, neuron, i)
         self.add_loss(current_node_name)
-        self.dot.render(directory="graphs", view=True)
+        self.dot.render(directory="graphs", view=view)
 
 
 if __name__ == "__main__":
     loss_function = MSE_Loss()
     model = Model(2, 1, loss_function)
     nngraph = Nngraph(model, loss_function)
-    nngraph.draw_graph()
+    nngraph.draw_graph(True)
