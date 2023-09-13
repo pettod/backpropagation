@@ -155,18 +155,12 @@ class Nngraph():
             color="#C48E00",
             fontsize="10pt",
         )
-        with self.dot.subgraph(name=f"cluster_loss") as cluster:
-            cluster.attr(
-                label="label",
-                style="invisible",
-                constraint="false",
-            )
-            cluster.edge(
-                "ground_truth",
-                "loss",
-                headport="w",
-                tailport="e",
-            )
+        self.dot.edge(
+            "ground_truth",
+            "loss",
+            headport="w",
+            tailport="e",
+        )
 
 
     def draw_graph(self, view=False):
