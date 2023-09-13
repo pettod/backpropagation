@@ -26,9 +26,11 @@ class Nngraph():
             )
 
     def add_single_layer_node(self, current_node_name, j, neuron):
+        node_text = r"+ | value {:.2}\ngrad {:.2}".format(neuron.input[j], neuron.grad)
         self.dot.node(
             current_node_name,
-            "value {:.2}\ngrad {:.2}".format(neuron.input[j], neuron.grad),
+            "{%s}" % node_text,
+            shape="record",
             style="filled",
             fillcolor="#FF4444",
         )
@@ -40,10 +42,11 @@ class Nngraph():
             # Create box nodes for weights
             if self.weight_boxes:
                 weight_node_name = f"{previous_layer_node_name}_{current_node_name}"
+                node_text = r"* | weight {:.2}\ngrad {:.2}".format(weight, neuron.weights.grad[k])
                 self.dot.node(
                     weight_node_name,
-                    "weight {:.2}\ngrad {:.2}".format(weight, neuron.weights.grad[k]),
-                    shape="box",
+                    "{%s}" % node_text,
+                    shape="record",
                     style="filled",
                     fillcolor="#64FF73",
                     fontsize="10pt",
@@ -79,7 +82,7 @@ class Nngraph():
                 self.add_single_layer_node(current_node_name, j, neuron)
                 self.add_edges_from_previous_layer_to_current(current_node_name, neuron, i)
         self.add_loss(current_node_name)
-        self.dot.render(directory="graphs", view=False)
+        self.dot.render(directory="graphs", view=True)
 
 
 if __name__ == "__main__":
