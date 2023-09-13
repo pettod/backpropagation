@@ -27,8 +27,8 @@ class Neuron():
 
     def backward(self, output_neuron):
         # (d loss / d neuron) = (d loss / d output) * (d output / d neuron)
-        self.weights.backward(self.input, output_neuron)
-        self.grad += np.sum(self.weights.grad)
-        if self.bias:
-            self.bias.backward(1.0, output_neuron)
-            self.grad += self.bias.grad
+        #self.grad += np.sum(self.weights.grad)
+        #self.weights.grad = self.grad
+        #if self.bias:
+        #    self.bias.grad = self.grad
+        pass

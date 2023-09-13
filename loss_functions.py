@@ -4,7 +4,8 @@ import numpy as np
 class MSE_Loss():
     def __init__(self):
         self.loss = 0.0
-        self.grad = 0.0
+        self.grad = 1.0
+        self.input_grad = 0.0
         self.input = 0.0
         self.name = "loss_MSE"
         self.y_true = ""
@@ -19,8 +20,9 @@ class MSE_Loss():
         return 2 * x
 
     def backward(self):
-        d_neuron = self.mse_derivative(self.loss) * self.loss
-        self.grad += np.sum(self.input * d_neuron)
+        #d_neuron = self.mse_derivative(self.loss) * self.loss
+        #self.grad += np.sum(self.input * d_neuron)
+        self.input_grad += self.mse_derivative(self.loss)
 
     def zero_grad(self):
-        self.grad = 0.0
+        self.input_grad = 0.0
