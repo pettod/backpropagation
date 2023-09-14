@@ -17,7 +17,23 @@ class Neuron():
         self.output = np.sum(self.weights * input)
         if self.bias:
             self.output += self.bias
+        self.output = float(self.output)
         return self.output
+
+    def backward(self):
+        # Compute grads only for hidden layers
+        if type(self.input) == Value:
+
+            # Propagate input neurons grads
+            for i in range(self.input):
+                self.input[i].grad += float(self.weights.data[i] * self.weights.grad[i])
+
+        # Set neuron weights grads
+        self.weights.grad += self.input * self.grad
+
+        # Set neuron bias grad
+        if self.bias:
+            self.bias.grad += float(self.grad)
 
     def zero_grad(self):
         self.grad = 0.0

@@ -5,7 +5,13 @@ from loss_functions import MSE_Loss
 
 class Nngraph():
     def __init__(self, model, loss_function, filename="graph", weight_boxes=True):
-        self.dot = graphviz.Digraph(
+        self.dot = self.init_dot(filename)
+        self.layers = model.model
+        self.loss_function = loss_function
+        self.weight_boxes = weight_boxes
+
+    def init_dot(self, filename):
+        return graphviz.Digraph(
             comment="ML model graph",
             filename=f"{filename}.gv",
             format="png",
@@ -15,9 +21,6 @@ class Nngraph():
                 "splines": "false",  # Straight lines/edges between the nodes
             },
         )
-        self.layers = model.model
-        self.loss_function = loss_function
-        self.weight_boxes = weight_boxes
 
     def add_input_nodes(self, neuron, i):
         for k, input in enumerate(neuron.input):
@@ -165,7 +168,7 @@ class Nngraph():
 
     def draw_graph(self, view=False, filename=None):
         if filename:
-            self.dot.filename = f"{filename}.gv"
+            self.dot = self.init_dot(filename)
         for i, layer in enumerate(self.layers):
             for j, neuron in enumerate(layer.neurons):
                 current_node_name = f"layer_{i+1}_out_{j}"

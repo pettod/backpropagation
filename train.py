@@ -54,11 +54,12 @@ def main():
             if DEBUG:
                 nngraph.draw_graph(filename=f"graph_{epoch:04}_{i:04}")
             optimizer.step()
-    #print()
-    #print("Predictions")
-    #print("GT, prediction")
-    #for input, gt in zip(input_data, ground_truth):
-    #    print(input, gt, model(input))
+    print()
+    print("Predictions")
+    print("GT, prediction")
+    for input, gt in zip(input_data, ground_truth):
+        preds = [pred.output for pred in model(input)]
+        print(input, gt, preds)
 
     plt.plot(losses)
     plt.xlabel("Iterations")

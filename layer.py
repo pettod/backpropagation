@@ -10,7 +10,10 @@ class Layer:
         self.neurons = [Neuron(inputs, f"{self.name}_neuron_{i}", bias) for i in range(outputs)]
 
     def __call__(self, input):
-        outputs = []
         for neuron in self.neurons:
-            outputs.append(neuron(input))
-        return np.array(outputs)
+            neuron(input)
+        return self.neurons
+
+    def backward(self):
+        for neuron in self.neurons:
+            neuron.backward()
