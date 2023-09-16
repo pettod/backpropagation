@@ -71,19 +71,10 @@ class Nngraph():
         )
 
     def edge(self, dot, start_node, end_node):
-        dot.edge(
-            start_node,
-            end_node,
-            headport="w",
-            tailport="e",
-        )
+        dot.edge(start_node, end_node, headport="w", tailport="e")
 
     def node(self, node_name, label, attr):
-        self.dot.node(
-            node_name,
-            label,
-            **attr,
-        )
+        self.dot.node(node_name, label, **attr)
 
     def add_input_nodes(self, neuron, i):
         for k, input in enumerate(neuron.input):
@@ -94,40 +85,28 @@ class Nngraph():
                 NODE_ATTR["input"],
             )
 
-    def add_single_layer_node(self, current_node_name, j, neuron):
-        node_text = r"+ | value {:.2}\ngrad {:.2}".format(float(neuron.data), float(neuron.grad))
-
-        # Node
-        self.node(
-            current_node_name,
-            "{%s}" % node_text,
-            NODE_ATTR["sum"],
-        )
+    def add_single_layer_node(self, current_node_name, neuron):
+        # Node sum
+        sum_label = "{%s}" % r"+ | data {:.2}\ngrad {:.2}".format(float(neuron.data), float(neuron.grad))
+        self.node(current_node_name, sum_label, NODE_ATTR["sum"])
 
         # Node bias
         if neuron.bias:
-            self.node(
-                f"{current_node_name}_bias",
-                r"bias {:.2}\ngrad {:.2}".format(float(neuron.bias.data), float(neuron.bias.grad)),
-                NODE_ATTR["bias"],
-            )
+            bias_label = r"bias {:.2}\ngrad {:.2}".format(float(neuron.bias.data), float(neuron.bias.grad))
+            self.node(f"{current_node_name}_bias", bias_label, NODE_ATTR["bias"])
 
     def add_edges_from_previous_layer_to_current(self, current_node_name, neuron, i, layer_index):
         neuron_bias_edge_added = False
         for k, weight in enumerate(neuron.weights.data):
             previous_layer_node_name = f"layer_{i}_out_{k}"
 
-            # Create box nodes for weights
+            # Box nodes for weights
             if self.weight_boxes:
 
-                # Create weight node
+                # Weight node
                 weight_node_name = f"{previous_layer_node_name}_{current_node_name}"
-                node_text = r"* | weight {:.2}\ngrad {:.2}".format(weight, neuron.weights.grad[k])
-                self.node(
-                    weight_node_name,
-                    "{%s}" % node_text,
-                    NODE_ATTR["weight"],
-                )
+                weight_label = "{%s}" % r"* | weight {:.2}\ngrad {:.2}".format(weight, neuron.weights.grad[k])
+                self.node(weight_node_name, weight_label, NODE_ATTR["weight"])
 
                 # Connect weight to the input
                 self.edge(self.dot, previous_layer_node_name, weight_node_name)
@@ -159,12 +138,8 @@ class Nngraph():
                 )
 
     def add_activation_function(self, current_node_name, neuron, activation_name):
-        node_text = r"{} | value {:.2}\ngrad {:.2}".format(activation_name, float(neuron.data), float(neuron.grad))
-        self.node(
-            current_node_name,
-            "{%s}" % node_text,
-            NODE_ATTR["activation"],
-        )
+        activation_label = "{%s}" % r"{} | data {:.2}\ngrad {:.2}".format(activation_name, float(neuron.data), float(neuron.grad))
+        self.node(current_node_name, activation_label, NODE_ATTR["activation"])
 
     def add_edge_from_activation_to_neuron(self, current_node_name, i, j):
         # Add layer cluster
@@ -173,24 +148,16 @@ class Nngraph():
             self.edge(cluster, previous_layer_node_name, current_node_name)
 
     def add_loss(self, current_node_name):
-        node_text = r"{} | loss {:.2}\ngrad {:.2}".format(
+        loss_label = "{%s}" % r"{} | loss {:.2}\ngrad {:.2}".format(
             type(self.loss_function).__name__, self.loss_function.loss, self.loss_function.grad)
-        self.node(
-            "loss",
-            "{%s}" % node_text,
-            NODE_ATTR["activation"],
-        )
+        self.node("loss", loss_label, NODE_ATTR["activation"])
         self.edge(self.dot, current_node_name, "loss")
 
     def add_ground_truth(self):
         ground_truth_label = r"ground truth"
         for gt_element in self.loss_function.y_true:
             ground_truth_label += r"\n{:.2}".format(gt_element)
-        self.node(
-            "ground_truth",
-            ground_truth_label,
-            NODE_ATTR["ground_truth"],
-        )
+        self.node("ground_truth", ground_truth_label, NODE_ATTR["ground_truth"])
         self.edge(self.dot, "ground_truth", "loss")
 
     def draw_graph(self, view=False, filename=None):
@@ -203,7 +170,7 @@ class Nngraph():
                 if i == 0 and j == 0:
                     self.add_input_nodes(neuron, 0)
                 if type(neuron) == Neuron:
-                    self.add_single_layer_node(current_node_name, j, neuron)
+                    self.add_single_layer_node(current_node_name, neuron)
                     self.add_edges_from_previous_layer_to_current(current_node_name, neuron, i, layer_index)
                 elif type(neuron) == Activation:
                     self.add_activation_function(current_node_name, neuron, type(layer).__name__)
