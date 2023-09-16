@@ -37,6 +37,16 @@ class Value():
             self.data *= self.data
         return self.data
 
+    def __getitem__(self, item):
+         return self.data[item]
+
+    def __iter__(self):
+        for element in self.data:
+            yield element
+
+    def __len__(self):
+        return len(self.data)
+
     def zero_grad(self):
         self.grad = np.zeros(self.data.shape)
 

@@ -6,6 +6,7 @@ from loss_functions import MSE_Loss
 from model import Model
 from optimizers import Gradient_Decent
 from draw_graph import Nngraph
+from value import Value
 
 
 DEBUG = False
@@ -13,13 +14,17 @@ DEBUG = False
 
 def target_function(input_data):
     def f(x):
-        return (0.3*x[0] + 0.7*x[1]) + 0.2
+        return float(max(0, (0.3*x[0] + 0.7*x[1]) + 0.2))
     return np.array([[f(input_sample)] for input_sample in input_data])
 
 
 def main():
     # Data
-    input_data = np.random.uniform(-1, 1, (50, 2))
+    input_data = [
+        [
+            Value(np.random.uniform(-1, 1, (1))),
+            Value(np.random.uniform(-1, 1, (1))),
+        ] for i in range(50)]
     ground_truth = target_function(input_data)
 
     # Model
@@ -58,7 +63,7 @@ def main():
     print("Predictions")
     print("GT, prediction")
     for input, gt in zip(input_data, ground_truth):
-        preds = [pred.output for pred in model(input)]
+        preds = [pred.data for pred in model(input)]
         print(input, gt, preds)
 
     plt.plot(losses)
