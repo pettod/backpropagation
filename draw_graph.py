@@ -1,6 +1,6 @@
 import graphviz
 from activations import Activation
-from loss_functions import MSE_Loss
+from loss_functions import MSE
 from model import Model
 from neuron import Neuron
 
@@ -184,7 +184,7 @@ if __name__ == "__main__":
     number_layers = 2
     features = 3
     bias = True
-    loss_function = MSE_Loss()
+    loss_function = MSE()
     model = Model(
         number_of_inputs,
         number_of_outputs,

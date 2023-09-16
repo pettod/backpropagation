@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import tqdm
 
-from loss_functions import MSE_Loss
+from loss_functions import MSE
 from model import Model
 from optimizers import Gradient_Decent
 from draw_graph import Nngraph
@@ -33,7 +33,7 @@ def main():
     number_layers = 1
     features = 2
     bias = True
-    loss_function = MSE_Loss()
+    loss_function = MSE()
     model = Model(
         number_of_inputs,
         number_of_outputs,

@@ -1,4 +1,4 @@
-class MSE_Loss():
+class MSE():
     def __init__(self):
         self.loss = 0.0
         self.grad = 1.0
