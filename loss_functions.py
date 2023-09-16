@@ -17,7 +17,7 @@ class MSE():
             self.loss += float((pred.data - true)**2)
         return self.loss
 
-    def mse_derivative(self, x):
+    def derivative(self, x):
         return 2 * x
 
     def backward(self):
@@ -25,11 +25,11 @@ class MSE():
 
         # Compute loss grad with respect to the inputs
         for pred, true in zip(self.input, self.y_true):
-            input_grad += float(self.mse_derivative((pred.data - true)))
+            input_grad += float(self.derivative((pred.data - true)))
 
         # Set the inputs grad
         for pred in self.input:
             pred.grad += input_grad
 
-    def zero_grad(self):
+    def zeroGrad(self):
         self.input_grad = 0.0

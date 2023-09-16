@@ -4,7 +4,7 @@ class Activation():
         self.data = 0.0
         self.grad = 0.0
 
-    def zero_grad(self):
+    def zeroGrad(self):
         self.grad = 0.0
 
 

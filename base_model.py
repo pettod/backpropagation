@@ -6,11 +6,11 @@ class Base_Model():
         for layer in reversed(self.model + [self.loss_function]):
             layer.backward()
 
-    def zero_grad(self):
-        self.loss_function.zero_grad()
+    def zeroGrad(self):
+        self.loss_function.zeroGrad()
         for layer in self.model:
             for neuron in layer.neurons:
-                neuron.zero_grad()
+                neuron.zeroGrad()
 
     def forward(self, *args, **kwds):
         pass

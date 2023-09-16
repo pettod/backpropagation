@@ -5,8 +5,6 @@ class Value():
     def __init__(self, data):
         self.data = data
         self.grad = np.zeros(self.data.shape)
-        self.backward = self.backward
-        self.zero_grad = self.zero_grad
 
     def __call__(self):
         return self.data
@@ -47,7 +45,7 @@ class Value():
     def __len__(self):
         return len(self.data)
 
-    def zero_grad(self):
+    def zeroGrad(self):
         self.grad = np.zeros(self.data.shape)
 
     def backward(self, input_data, output_neuron):

@@ -4,7 +4,7 @@ from tqdm import tqdm
 
 from loss_functions import MSE
 from model import Model
-from optimizers import Gradient_Decent
+from optimizers import GradientDecent
 from draw_graph import Nngraph
 from value import Value
 
@@ -12,7 +12,7 @@ from value import Value
 DEBUG = False
 
 
-def target_function(input_data):
+def targetFunction(input_data):
     def f(x):
         return float(max(0, (0.3*x[0] + 0.7*x[1]) + 0.2))
     return np.array([[f(input_sample)] for input_sample in input_data])
@@ -25,7 +25,7 @@ def main():
             Value(np.random.uniform(-1, 1, (1))),
             Value(np.random.uniform(-1, 1, (1))),
         ] for i in range(50)]
-    ground_truth = target_function(input_data)
+    ground_truth = targetFunction(input_data)
 
     # Model
     number_of_inputs = len(input_data[0])
@@ -43,7 +43,7 @@ def main():
         loss_function,
     )
     learning_rate = 0.01
-    optimizer = Gradient_Decent(learning_rate, model)
+    optimizer = GradientDecent(learning_rate, model)
 
     # Train
     nngraph = Nngraph(model, loss_function)
@@ -54,10 +54,10 @@ def main():
             prediction = model(input)
             loss = loss_function(prediction, gt)
             losses.append(loss)
-            model.zero_grad()
+            model.zeroGrad()
             model.backward()
             if DEBUG:
-                nngraph.draw_graph(filename=f"graph_{epoch:04}_{i:04}")
+                nngraph.drawGraph(filename=f"graph_{epoch:04}_{i:04}")
             optimizer.step()
     print()
     print("Predictions")
@@ -71,6 +71,6 @@ def main():
     plt.ylabel("Loss")
     plt.show()
 
-    nngraph.draw_graph(view=True, filename=f"graph_final")
+    nngraph.drawGraph(view=True, filename=f"graph_final")
 
 main()

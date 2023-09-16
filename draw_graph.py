@@ -58,12 +58,12 @@ NODE_ATTR = {
 
 class Nngraph():
     def __init__(self, model, loss_function, filename="graph", weight_boxes=True):
-        self.dot = self.init_dot(filename)
+        self.dot = self.initDot(filename)
         self.layers = model.model
         self.loss_function = loss_function
         self.weight_boxes = weight_boxes
 
-    def init_dot(self, filename):
+    def initDot(self, filename):
         return graphviz.Digraph(
             comment="ML model graph",
             filename=f"{filename}.gv",
@@ -81,13 +81,13 @@ class Nngraph():
     def node(self, node_name, label, attr):
         self.dot.node(node_name, label, **attr)
 
-    def add_input_nodes(self, neuron, i):
+    def inputNodes(self, neuron, i):
         for k, input in enumerate(neuron.input):
             previous_layer_node_name = f"layer_{i}_out_{k}"
             input_label = r"input\n{:.2}".format(float(input.data))
             self.node(previous_layer_node_name, input_label, NODE_ATTR["input"])
 
-    def add_single_layer_node(self, current_node_name, neuron):
+    def singleLayerNode(self, current_node_name, neuron):
         # Node sum
         sum_label = "{%s}" % r"+ | data {:.2}\ngrad {:.2}".format(float(neuron.data), float(neuron.grad))
         self.node(current_node_name, sum_label, NODE_ATTR["sum"])
@@ -97,7 +97,7 @@ class Nngraph():
             bias_label = r"bias {:.2}\ngrad {:.2}".format(float(neuron.bias.data), float(neuron.bias.grad))
             self.node(f"{current_node_name}_bias", bias_label, NODE_ATTR["bias"])
 
-    def add_edges_from_previous_layer_to_current(self, current_node_name, neuron, i, layer_index):
+    def edgesFromPreviousLayerToCurrent(self, current_node_name, neuron, i, layer_index):
         neuron_bias_edge_added = False
         for k, weight in enumerate(neuron.weights.data):
             previous_layer_node_name = f"layer_{i}_out_{k}"
@@ -134,47 +134,47 @@ class Nngraph():
                     fontsize="10pt",
                 )
 
-    def add_activation_function(self, current_node_name, neuron, activation_name):
+    def activationFunction(self, current_node_name, neuron, activation_name):
         activation_label = "{%s}" % r"{} | data {:.2}\ngrad {:.2}".format(activation_name, float(neuron.data), float(neuron.grad))
         self.node(current_node_name, activation_label, NODE_ATTR["activation"])
 
-    def add_edge_from_activation_to_neuron(self, current_node_name, i, j):
+    def edgeFromActivationToNeuron(self, current_node_name, i, j):
         # Add layer cluster
         with self.dot.subgraph(name=f"cluster_{i-1}") as cluster:
             previous_layer_node_name = f"layer_{i}_out_{j}"
             self.edge(cluster, previous_layer_node_name, current_node_name)
 
-    def add_loss(self, current_node_name):
+    def loss(self, current_node_name):
         loss_label = "{%s}" % r"{} | loss {:.2}\ngrad {:.2}".format(type(self.loss_function).__name__, self.loss_function.loss, self.loss_function.grad)
         self.node("loss", loss_label, NODE_ATTR["activation"])
         self.edge(self.dot, current_node_name, "loss")
 
-    def add_ground_truth(self):
+    def groundTruth(self):
         ground_truth_label = r"ground truth"
         for gt_element in self.loss_function.y_true:
             ground_truth_label += r"\n{:.2}".format(gt_element)
         self.node("ground_truth", ground_truth_label, NODE_ATTR["ground_truth"])
         self.edge(self.dot, "ground_truth", "loss")
 
-    def draw_graph(self, view=False, filename=None):
+    def drawGraph(self, view=False, filename=None):
         if filename:
-            self.dot = self.init_dot(filename)
+            self.dot = self.initDot(filename)
         layer_index = 1
         for i, layer in enumerate(self.layers):
             for j, neuron in enumerate(layer.neurons):
                 current_node_name = f"layer_{i+1}_out_{j}"
                 if i == 0 and j == 0:
-                    self.add_input_nodes(neuron, 0)
+                    self.inputNodes(neuron, 0)
                 if type(neuron) == Neuron:
-                    self.add_single_layer_node(current_node_name, neuron)
-                    self.add_edges_from_previous_layer_to_current(current_node_name, neuron, i, layer_index)
+                    self.singleLayerNode(current_node_name, neuron)
+                    self.edgesFromPreviousLayerToCurrent(current_node_name, neuron, i, layer_index)
                 elif type(neuron) == Activation:
-                    self.add_activation_function(current_node_name, neuron, type(layer).__name__)
-                    self.add_edge_from_activation_to_neuron(current_node_name, i, j)
+                    self.activationFunction(current_node_name, neuron, type(layer).__name__)
+                    self.edgeFromActivationToNeuron(current_node_name, i, j)
             if type(neuron) != Activation:
                 layer_index += 1
-        self.add_loss(current_node_name)
-        self.add_ground_truth()
+        self.loss(current_node_name)
+        self.groundTruth()
         self.dot.render(directory="graphs", view=view)
 
 
@@ -194,4 +194,4 @@ if __name__ == "__main__":
         loss_function,
     )
     nngraph = Nngraph(model, loss_function)
-    nngraph.draw_graph(view=True)
+    nngraph.drawGraph(view=True)

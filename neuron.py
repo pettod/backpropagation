@@ -1,12 +1,12 @@
 import numpy as np
 from value import Value
-from weight_initialization import initialize_weights
+from weight_initialization import initializeWeights
 
 
 class Neuron():
     def __init__(self, number_of_inputs, name, bias=False):
-        self.weights = Value(initialize_weights((number_of_inputs)))
-        self.bias = Value(initialize_weights((1))) if bias else None
+        self.weights = Value(initializeWeights((number_of_inputs)))
+        self.bias = Value(initializeWeights((1))) if bias else None
         self.input = [Value(np.array(0.0)) for i in range(number_of_inputs)]
         self.data = 0.0
         self.grad = 0.0
@@ -34,8 +34,8 @@ class Neuron():
         if self.bias:
             self.bias.grad += float(self.grad)
 
-    def zero_grad(self):
+    def zeroGrad(self):
         self.grad = 0.0
-        self.weights.zero_grad()
+        self.weights.zeroGrad()
         if self.bias:
-            self.bias.zero_grad()
+            self.bias.zeroGrad()
