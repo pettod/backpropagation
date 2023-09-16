@@ -1,9 +1,9 @@
 from activations import ReLU
-from base_model import Base_Model
+from base_model import BaseModel
 from dense import Dense
 
 
-class Model(Base_Model):
+class Model(BaseModel):
     def __init__(
             self,
             number_of_inputs,
