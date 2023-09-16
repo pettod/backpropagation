@@ -14,10 +14,9 @@ class Neuron():
 
     def __call__(self, input):
         self.input = input
-        self.data = 0.0 #np.sum(self.weights * input)
+        self.data = 0.0
         for weight, input_value in zip(self.weights.data, self.input):
-            input_value = input_value.data if type(input_value) == Neuron else input_value
-            self.data += weight * input_value
+            self.data += weight * input_value.data
         if self.bias:
             self.data += self.bias
         self.data = float(self.data)
