@@ -1,8 +1,8 @@
 import graphviz
-from model import Model
-from loss_functions import MSE_Loss
-from neuron import Neuron
 from activations import Activation
+from loss_functions import MSE_Loss
+from model import Model
+from neuron import Neuron
 
 
 NODE_ATTR = {
@@ -33,6 +33,11 @@ NODE_ATTR = {
         "fillcolor": "#FFF2CC",
         "color": "#D6B656",
         "fontsize": "10pt",
+    },
+    "layer": {
+        "style": "rounded,filled",
+        "fillcolor": "#EBEBEB",
+        "color": "#666666",
     },
     "sum": {
             "shape": "record",
@@ -79,11 +84,8 @@ class Nngraph():
     def add_input_nodes(self, neuron, i):
         for k, input in enumerate(neuron.input):
             previous_layer_node_name = f"layer_{i}_out_{k}"
-            self.node(
-                previous_layer_node_name,
-                r"input\n{:.2}".format(float(input.data)),
-                NODE_ATTR["input"],
-            )
+            input_label = r"input\n{:.2}".format(float(input.data))
+            self.node(previous_layer_node_name, input_label, NODE_ATTR["input"])
 
     def add_single_layer_node(self, current_node_name, neuron):
         # Node sum
@@ -113,12 +115,7 @@ class Nngraph():
 
                 # Add layer cluster
                 with self.dot.subgraph(name=f"cluster_{i}") as cluster:
-                    cluster.attr(
-                        label=f"Layer {layer_index}",
-                        style="rounded,filled",
-                        fillcolor="#EBEBEB",
-                        color="#666666",
-                    )
+                    cluster.attr(label=f"Layer {layer_index}", **NODE_ATTR["layer"])
 
                     # Connect weight to the output node
                     self.edge(cluster, weight_node_name, current_node_name)
@@ -148,8 +145,7 @@ class Nngraph():
             self.edge(cluster, previous_layer_node_name, current_node_name)
 
     def add_loss(self, current_node_name):
-        loss_label = "{%s}" % r"{} | loss {:.2}\ngrad {:.2}".format(
-            type(self.loss_function).__name__, self.loss_function.loss, self.loss_function.grad)
+        loss_label = "{%s}" % r"{} | loss {:.2}\ngrad {:.2}".format(type(self.loss_function).__name__, self.loss_function.loss, self.loss_function.grad)
         self.node("loss", loss_label, NODE_ATTR["activation"])
         self.edge(self.dot, current_node_name, "loss")
 
