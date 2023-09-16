@@ -5,6 +5,52 @@ from neuron import Neuron
 from activations import Activation
 
 
+NODE_ATTR = {
+    "activation": {
+        "shape": "record",
+        "style": "rounded,filled",
+        "fillcolor": "#DAE8FC",
+        "color": "#6C8EBF",
+        "fontsize": "10pt",
+    },
+    "bias": {
+        "shape": "record",
+        "style": "rounded,filled",
+        "fillcolor": "#E1D5E7",
+        "color": "#9673A6",
+        "fontsize": "10pt",
+    },
+    "ground_truth": {
+        "shape": "record",
+        "style": "filled",
+        "fillcolor": "#FFD2B0",
+        "color": "#C48E00",
+        "fontsize": "10pt",
+    },
+    "input": {
+        "shape": "record",
+        "style": "filled",
+        "fillcolor": "#FFF2CC",
+        "color": "#D6B656",
+        "fontsize": "10pt",
+    },
+    "sum": {
+            "shape": "record",
+            "style": "rounded,filled",
+            "fillcolor": "#F8CECC",
+            "color": "#B85450",
+            "fontsize": "10pt",
+    },
+    "weight": {
+        "shape": "record",
+        "style": "rounded,filled",
+        "fillcolor": "#D5E8D4",
+        "color": "#82B366",
+        "fontsize": "10pt",
+    },
+}
+
+
 class Nngraph():
     def __init__(self, model, loss_function, filename="graph", weight_boxes=True):
         self.dot = self.init_dot(filename)
@@ -32,43 +78,38 @@ class Nngraph():
             tailport="e",
         )
 
+    def node(self, node_name, label, attr):
+        self.dot.node(
+            node_name,
+            label,
+            **attr,
+        )
+
     def add_input_nodes(self, neuron, i):
         for k, input in enumerate(neuron.input):
             previous_layer_node_name = f"layer_{i}_out_{k}"
-            self.dot.node(
+            self.node(
                 previous_layer_node_name,
                 r"input\n{:.2}".format(float(input.data)),
-                shape="record",
-                style="filled",
-                fillcolor="#FFF2CC",
-                color="#D6B656",
-                fontsize="10pt",
+                NODE_ATTR["input"],
             )
 
     def add_single_layer_node(self, current_node_name, j, neuron):
         node_text = r"+ | value {:.2}\ngrad {:.2}".format(float(neuron.data), float(neuron.grad))
 
         # Node
-        self.dot.node(
+        self.node(
             current_node_name,
             "{%s}" % node_text,
-            shape="record",
-            style="rounded,filled",
-            fillcolor="#F8CECC",
-            color="#B85450",
-            fontsize="10pt",
+            NODE_ATTR["sum"],
         )
 
         # Node bias
         if neuron.bias:
-            self.dot.node(
-                "{}_bias".format(current_node_name),
+            self.node(
+                f"{current_node_name}_bias",
                 r"bias {:.2}\ngrad {:.2}".format(float(neuron.bias.data), float(neuron.bias.grad)),
-                shape="record",
-                style="rounded,filled",
-                fillcolor="#E1D5E7",
-                color="#9673A6",
-                fontsize="10pt",
+                NODE_ATTR["bias"],
             )
 
     def add_edges_from_previous_layer_to_current(self, current_node_name, neuron, i, layer_index):
@@ -82,14 +123,10 @@ class Nngraph():
                 # Create weight node
                 weight_node_name = f"{previous_layer_node_name}_{current_node_name}"
                 node_text = r"* | weight {:.2}\ngrad {:.2}".format(weight, neuron.weights.grad[k])
-                self.dot.node(
+                self.node(
                     weight_node_name,
                     "{%s}" % node_text,
-                    shape="record",
-                    style="rounded,filled",
-                    fillcolor="#D5E8D4",
-                    color="#82B366",
-                    fontsize="10pt",
+                    NODE_ATTR["weight"],
                 )
 
                 # Connect weight to the input
@@ -123,14 +160,10 @@ class Nngraph():
 
     def add_activation_function(self, current_node_name, neuron, activation_name):
         node_text = r"{} | value {:.2}\ngrad {:.2}".format(activation_name, float(neuron.data), float(neuron.grad))
-        self.dot.node(
+        self.node(
             current_node_name,
             "{%s}" % node_text,
-            shape="record",
-            style="rounded,filled",
-            fillcolor="#DAE8FC",
-            color="#6C8EBF",
-            fontsize="10pt",
+            NODE_ATTR["activation"],
         )
 
     def add_edge_from_activation_to_neuron(self, current_node_name, i, j):
@@ -142,14 +175,10 @@ class Nngraph():
     def add_loss(self, current_node_name):
         node_text = r"{} | loss {:.2}\ngrad {:.2}".format(
             type(self.loss_function).__name__, self.loss_function.loss, self.loss_function.grad)
-        self.dot.node(
+        self.node(
             "loss",
             "{%s}" % node_text,
-            shape="record",
-            style="rounded,filled",
-            fillcolor="#DAE8FC",
-            color="#6C8EBF",
-            fontsize="10pt",
+            NODE_ATTR["activation"],
         )
         self.edge(self.dot, current_node_name, "loss")
 
@@ -157,14 +186,10 @@ class Nngraph():
         ground_truth_label = r"ground truth"
         for gt_element in self.loss_function.y_true:
             ground_truth_label += r"\n{:.2}".format(gt_element)
-        self.dot.node(
+        self.node(
             "ground_truth",
             ground_truth_label,
-            shape="record",
-            style="filled",
-            fillcolor="#FFD2B0",
-            color="#C48E00",
-            fontsize="10pt",
+            NODE_ATTR["ground_truth"],
         )
         self.edge(self.dot, "ground_truth", "loss")
 
@@ -195,7 +220,7 @@ if __name__ == "__main__":
     number_of_outputs = 1
     number_layers = 2
     features = 3
-    bias = False
+    bias = True
     loss_function = MSE_Loss()
     model = Model(
         number_of_inputs,
