@@ -1,7 +1,7 @@
 from neuron import Neuron
 
 
-class Layer:
+class Dense:
     def __init__(self, inputs, outputs, name, bias=False):
         self.name = name
         self.neurons = [Neuron(inputs, f"{self.name}_neuron_{i}", bias) for i in range(outputs)]

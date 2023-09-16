@@ -1,6 +1,6 @@
 from activations import ReLU
 from base_model import Base_Model
-from layer import Layer
+from dense import Dense
 
 
 class Model(Base_Model):
@@ -19,13 +19,13 @@ class Model(Base_Model):
         self.model = []
         for i in range(number_layers):
             if i == 0:
-                layer = Layer(number_of_inputs, features, f"layer_{i}", bias)
+                layer = Dense(number_of_inputs, features, f"layer_{i}", bias)
                 activation = ReLU(features)
             elif i == number_layers - 1:
-                layer = Layer(features, number_of_outputs, f"layer_{i}", bias)
+                layer = Dense(features, number_of_outputs, f"layer_{i}", bias)
                 activation = ReLU(number_of_outputs)
             else:
-                layer = Layer(features, features, f"layer_{i}", bias)
+                layer = Dense(features, features, f"layer_{i}", bias)
                 activation = ReLU(features)
             self.model.append(layer)
             self.model.append(activation)
