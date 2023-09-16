@@ -24,6 +24,14 @@ class Nngraph():
             },
         )
 
+    def edge(self, dot, start_node, end_node):
+        dot.edge(
+            start_node,
+            end_node,
+            headport="w",
+            tailport="e",
+        )
+
     def add_input_nodes(self, neuron, i):
         for k, input in enumerate(neuron.input):
             previous_layer_node_name = f"layer_{i}_out_{k}"
@@ -85,12 +93,7 @@ class Nngraph():
                 )
 
                 # Connect weight to the input
-                self.dot.edge(
-                    previous_layer_node_name,
-                    weight_node_name,
-                    headport="w",
-                    tailport="e",
-                )
+                self.edge(self.dot, previous_layer_node_name, weight_node_name)
 
                 # Add layer cluster
                 with self.dot.subgraph(name=f"cluster_{i}") as cluster:
@@ -102,22 +105,12 @@ class Nngraph():
                     )
 
                     # Connect weight to the output node
-                    cluster.edge(
-                        weight_node_name,
-                        current_node_name,
-                        headport="w",
-                        tailport="e",
-                    )
+                    self.edge(cluster, weight_node_name, current_node_name)
 
                     # Connect bias
                     if neuron.bias and not neuron_bias_edge_added:
                         neuron_bias_edge_added = True
-                        cluster.edge(
-                            "{}_bias".format(current_node_name),
-                            current_node_name,
-                            headport="w",
-                            tailport="e",
-                        )
+                        self.edge(cluster, "{}_bias".format(current_node_name), current_node_name)
 
             # Add weight texts the edges
             else:
@@ -144,12 +137,7 @@ class Nngraph():
         # Add layer cluster
         with self.dot.subgraph(name=f"cluster_{i-1}") as cluster:
             previous_layer_node_name = f"layer_{i}_out_{j}"
-            cluster.edge(
-                previous_layer_node_name,
-                current_node_name,
-                headport="w",
-                tailport="e",
-            )
+            self.edge(cluster, previous_layer_node_name, current_node_name)
 
     def add_loss(self, current_node_name):
         node_text = r"{} | loss {:.2}\ngrad {:.2}".format(
@@ -163,12 +151,7 @@ class Nngraph():
             color="#6C8EBF",
             fontsize="10pt",
         )
-        self.dot.edge(
-            current_node_name,
-            "loss",
-            headport="w",
-            tailport="e",
-        )
+        self.edge(self.dot, current_node_name, "loss")
 
     def add_ground_truth(self):
         ground_truth_label = r"ground truth"
@@ -183,12 +166,7 @@ class Nngraph():
             color="#C48E00",
             fontsize="10pt",
         )
-        self.dot.edge(
-            "ground_truth",
-            "loss",
-            headport="w",
-            tailport="e",
-        )
+        self.edge(self.dot, "ground_truth", "loss")
 
     def draw_graph(self, view=False, filename=None):
         if filename:

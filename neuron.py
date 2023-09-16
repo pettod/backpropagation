@@ -1,3 +1,4 @@
+import numpy as np
 from value import Value
 from weight_initialization import initialize_weights
 
@@ -6,7 +7,7 @@ class Neuron():
     def __init__(self, number_of_inputs, name, bias=False):
         self.weights = Value(initialize_weights((number_of_inputs)))
         self.bias = Value(initialize_weights((1))) if bias else None
-        self.input = ""
+        self.input = [Value(np.array(0.0)) for i in range(number_of_inputs)]
         self.data = 0.0
         self.grad = 0.0
         self.name = name
