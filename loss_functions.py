@@ -52,7 +52,7 @@ class CrossEntropyLoss(BaseLoss):
     def __call__(self, y_pred, y_true):
         # Clip values between (epsilon, 1 - epsilon)
         for i in range(len(y_pred)):
-            y_pred[i] = max(min(1 - self.epsilon, y_pred[i]), self.epsilon)
+            y_pred[i].data = max(min(1 - self.epsilon, y_pred[i].data), self.epsilon)
 
         self.input = y_pred
         self.y_true = y_true
