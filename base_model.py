@@ -7,7 +7,6 @@ class BaseModel():
             layer.backward()
 
     def zeroGrad(self):
-        self.loss_function.zeroGrad()
         for layer in self.model:
             for neuron in layer.neurons:
                 neuron.zeroGrad()

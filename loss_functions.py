@@ -30,6 +30,3 @@ class MSE():
         # Set the inputs grad
         for pred in self.input:
             pred.grad += input_grad
-
-    def zeroGrad(self):
-        self.input_grad = 0.0
