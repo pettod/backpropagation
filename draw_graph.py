@@ -144,10 +144,9 @@ class Nngraph():
             previous_layer_node_name = f"layer_{i}_out_{j}"
             self.edge(cluster, previous_layer_node_name, current_node_name)
 
-    def loss(self, current_node_name):
+    def loss(self):
         loss_label = "{%s}" % r"{} | loss {:.2}\ngrad {:.2}".format(type(self.loss_function).__name__, self.loss_function.loss, self.loss_function.grad)
         self.node("loss", loss_label, NODE_ATTR["activation"])
-        self.edge(self.dot, current_node_name, "loss")
 
     def groundTruth(self):
         ground_truth_label = r"ground truth"
@@ -171,9 +170,11 @@ class Nngraph():
                 elif type(neuron) == Activation:
                     self.activationFunction(current_node_name, neuron, type(layer).__name__)
                     self.edgeFromActivationToNeuron(current_node_name, i, j)
+                if i == len(self.layers) - 1:
+                    self.edge(self.dot, current_node_name, "loss")
             if type(neuron) != Activation:
                 layer_index += 1
-        self.loss(current_node_name)
+        self.loss()
         self.groundTruth()
         self.dot.render(directory="graphs", view=view)
 
