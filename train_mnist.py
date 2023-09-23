@@ -1,7 +1,7 @@
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
-from tqdm import tqdm
+from tqdm import tqdm, trange
 
 from loss_functions import CrossEntropyLoss
 from optimizers import GradientDecent
@@ -99,8 +99,10 @@ def main():
     nngraph = Nngraph(model, loss_function)
     epochs = 10
     losses = []
-    for epoch in range(epochs):
-        for i, (input, gt) in tqdm(enumerate(zip(input_data, ground_truth))):
+    for epoch in range(1, 1+epochs):
+        progress_bar = trange(len(input_data), leave=False)
+        progress_bar.set_description(f" Epoch {epoch}/{epochs}")
+        for i, (input, gt) in zip(progress_bar, zip(input_data, ground_truth)):
             prediction = model(input)
             loss = loss_function(prediction, gt)
             losses.append(loss)
@@ -109,13 +111,15 @@ def main():
             if DEBUG:
                 nngraph.drawGraph(filename=f"graph_{epoch:04}_{i:04}")
             optimizer.step()
-    if False:
+            progress_bar.display("loss: {:.4}".format(loss), 1)
+
+    if True:
         print()
         print("Predictions")
         print("GT, prediction")
         for input, gt in zip(input_data, ground_truth):
-            preds = [pred.data for pred in model(input)]
-            print(input, gt, preds)
+            preds = [round(pred.data, 2) for pred in model(input)]
+            print(gt, preds)
 
     plt.plot(losses)
     plt.xlabel("Iterations")

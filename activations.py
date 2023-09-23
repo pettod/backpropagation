@@ -14,7 +14,7 @@ class BaseActivation():
     def inputSum(self, input):
         input_sum = 0.0
         for value in input:
-            input_sum += value.data
+            input_sum += math.exp(value.data)
         return input_sum
 
     def backward(self):
@@ -58,7 +58,7 @@ class Softmax(BaseActivation):
         # Subtracting the maximum value for numerical stability
         for neuron, value in zip(self.neurons, input):
             neuron.input = value
-            softmax_value = math.exp(value.data - input_max) / input_sum
+            softmax_value = math.exp(value.data) / input_sum
             neuron.data = softmax_value
             self.outputs.append(softmax_value)
         return self.neurons
