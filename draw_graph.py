@@ -84,17 +84,17 @@ class Nngraph():
     def inputNodes(self, neuron, i):
         for k, input in enumerate(neuron.input):
             previous_layer_node_name = f"layer_{i}_out_{k}"
-            input_label = r"input\n{:.2}".format(float(input.data))
+            input_label = r"input\n{:.2f}".format(float(input.data))
             self.node(previous_layer_node_name, input_label, NODE_ATTR["input"])
 
     def singleLayerNode(self, current_node_name, neuron):
         # Node sum
-        sum_label = "{%s}" % r"+ | data {:.2}\ngrad {:.2}".format(float(neuron.data), float(neuron.grad))
+        sum_label = "{%s}" % r"+ | data {:.2f}\ngrad {:.2f}".format(float(neuron.data), float(neuron.grad))
         self.node(current_node_name, sum_label, NODE_ATTR["sum"])
 
         # Node bias
         if neuron.bias:
-            bias_label = r"bias {:.2}\ngrad {:.2}".format(float(neuron.bias.data), float(neuron.bias.grad))
+            bias_label = r"bias {:.2f}\ngrad {:.2f}".format(float(neuron.bias.data), float(neuron.bias.grad))
             self.node(f"{current_node_name}_bias", bias_label, NODE_ATTR["bias"])
 
     def edgesFromPreviousLayerToCurrent(self, current_node_name, neuron, i, layer_index):
@@ -107,7 +107,7 @@ class Nngraph():
 
                 # Weight node
                 weight_node_name = f"{previous_layer_node_name}_{current_node_name}"
-                weight_label = "{%s}" % r"* | weight {:.2}\ngrad {:.2}".format(weight, neuron.weights.grad[k])
+                weight_label = "{%s}" % r"* | weight {:.2f}\ngrad {:.2f}".format(weight, neuron.weights.grad[k])
                 self.node(weight_node_name, weight_label, NODE_ATTR["weight"])
 
                 # Connect weight to the input
@@ -130,12 +130,12 @@ class Nngraph():
                 self.dot.edge(
                     previous_layer_node_name,
                     current_node_name,
-                    label="w {:.2}\ng {:.2}".format(weight, neuron.weights.grad[k]),
+                    label="w {:.2f}\ng {:.2f}".format(weight, neuron.weights.grad[k]),
                     fontsize="10pt",
                 )
 
     def activationFunction(self, current_node_name, neuron, activation_name):
-        activation_label = "{%s}" % r"{} | data {:.2}\ngrad {:.2}".format(activation_name, float(neuron.data), float(neuron.grad))
+        activation_label = "{%s}" % r"{} | data {:.2f}\ngrad {:.2f}".format(activation_name, float(neuron.data), float(neuron.grad))
         self.node(current_node_name, activation_label, NODE_ATTR["activation"])
 
     def edgeFromActivationToNeuron(self, current_node_name, i, j):
@@ -145,13 +145,13 @@ class Nngraph():
             self.edge(cluster, previous_layer_node_name, current_node_name)
 
     def loss(self):
-        loss_label = "{%s}" % r"{} | loss {:.2}\ngrad {:.2}".format(type(self.loss_function).__name__, self.loss_function.loss, self.loss_function.grad)
+        loss_label = "{%s}" % r"{} | loss {:.2f}\ngrad {:.2f}".format(type(self.loss_function).__name__, self.loss_function.loss, self.loss_function.grad)
         self.node("loss", loss_label, NODE_ATTR["activation"])
 
     def groundTruth(self):
         ground_truth_label = r"ground truth"
         for gt_element in self.loss_function.y_true:
-            ground_truth_label += r"\n{:.2}".format(gt_element)
+            ground_truth_label += r"\n{:.2f}".format(gt_element)
         self.node("ground_truth", ground_truth_label, NODE_ATTR["ground_truth"])
         self.edge(self.dot, "ground_truth", "loss")
 
