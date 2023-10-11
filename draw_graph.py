@@ -5,10 +5,13 @@ from model import Model
 from neuron import Neuron
 
 
+FIXED_SIZE = "true"
 NODE_ATTR = {
     "activation": {
         "shape": "record",
         "style": "rounded,filled",
+        "fixedsize": FIXED_SIZE,
+        "width": "1.50",
         "fillcolor": "#DAE8FC",
         "color": "#6C8EBF",
         "fontsize": "10pt",
@@ -16,6 +19,8 @@ NODE_ATTR = {
     "bias": {
         "shape": "record",
         "style": "rounded,filled",
+        "fixedsize": FIXED_SIZE,
+        "width": "0.80",
         "fillcolor": "#E1D5E7",
         "color": "#9673A6",
         "fontsize": "10pt",
@@ -23,6 +28,8 @@ NODE_ATTR = {
     "ground_truth": {
         "shape": "record",
         "style": "filled",
+        "fixedsize": FIXED_SIZE,
+        "width": "1.00",
         "fillcolor": "#FFD2B0",
         "color": "#C48E00",
         "fontsize": "10pt",
@@ -30,6 +37,8 @@ NODE_ATTR = {
     "input": {
         "shape": "record",
         "style": "filled",
+        "fixedsize": FIXED_SIZE,
+        "width": "0.70",
         "fillcolor": "#FFF2CC",
         "color": "#D6B656",
         "fontsize": "10pt",
@@ -40,15 +49,19 @@ NODE_ATTR = {
         "color": "#666666",
     },
     "sum": {
-            "shape": "record",
-            "style": "rounded,filled",
-            "fillcolor": "#F8CECC",
-            "color": "#B85450",
-            "fontsize": "10pt",
+        "shape": "record",
+        "style": "rounded,filled",
+        "fixedsize": FIXED_SIZE,
+        "width": "1.20",
+        "fillcolor": "#F8CECC",
+        "color": "#B85450",
+        "fontsize": "10pt",
     },
     "weight": {
         "shape": "record",
         "style": "rounded,filled",
+        "fixedsize": FIXED_SIZE,
+        "width": "1.20",
         "fillcolor": "#D5E8D4",
         "color": "#82B366",
         "fontsize": "10pt",
