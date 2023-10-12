@@ -98,12 +98,12 @@ def main():
                     np.concatenate([white_block, plot_image], axis=1)
                 ], axis=0)
 
-                cv2.circle(image, (910, 1369), 60, (156,156,230), -1)
-                cv2.circle(image, (1138, 1369), 60, (156,156,230), -1)
-                cv2.circle(image, (1367, 1369), 60, (156,156,230), -1)
-                cv2.circle(image, (910, 1449), 60, (255,217,179), -1)
-                cv2.circle(image, (1138, 1449), 60, (255,217,179), -1)
-                cv2.circle(image, (1367, 1449), 60, (255,217,179), -1)
+                cv2.circle(image, (890, 1359), 60, (156,156,230), -1)
+                cv2.circle(image, (1118, 1359), 60, (156,156,230), -1)
+                cv2.circle(image, (1347, 1359), 60, (156,156,230), -1)
+                cv2.circle(image, (890, 1459), 60, (255,217,179), -1)
+                cv2.circle(image, (1118, 1459), 60, (255,217,179), -1)
+                cv2.circle(image, (1347, 1459), 60, (255,217,179), -1)
 
                 weights = model.model[0].neurons[0].weights.data
                 bias = model.model[0].neurons[0].bias.data
@@ -112,48 +112,48 @@ def main():
                 cv2.putText(
                     image,
                     "max(0, {:.2f}i  + {:.2f}i  + {:.2f})".format(weights[0], weights[1], bias[0]),
-                    (670, 1385), cv2.FONT_HERSHEY_SIMPLEX,  
+                    (650, 1375), cv2.FONT_HERSHEY_SIMPLEX,  
                     1.5, (0, 0, 0), 2, cv2.LINE_AA)
                 cv2.putText(
                     image,
                     "0",
-                    (977, 1400), cv2.FONT_HERSHEY_SIMPLEX,  
+                    (957, 1390), cv2.FONT_HERSHEY_SIMPLEX,  
                     1, (0, 0, 0), 2, cv2.LINE_AA)
                 cv2.putText(
                     image,
                     "1",
-                    (1205, 1400), cv2.FONT_HERSHEY_SIMPLEX,  
+                    (1185, 1390), cv2.FONT_HERSHEY_SIMPLEX,  
                     1, (0, 0, 0), 2, cv2.LINE_AA)
 
                 # Pred text
                 cv2.putText(
                     image,
                     "Prediction:",
-                    (250, 1385), cv2.FONT_HERSHEY_SIMPLEX,  
+                    (230, 1375), cv2.FONT_HERSHEY_SIMPLEX,  
                     1.5, (0, 0, 0), 4, cv2.LINE_AA)
 
                 # GT formula
                 cv2.putText(
                     image,
                     "max(0, 0.30i  + 0.70i  + 0.20)",
-                    (670, 1465), cv2.FONT_HERSHEY_SIMPLEX,  
+                    (650, 1475), cv2.FONT_HERSHEY_SIMPLEX,  
                     1.5, (0, 0, 0), 2, cv2.LINE_AA)
                 cv2.putText(
                     image,
                     "0",
-                    (977, 1480), cv2.FONT_HERSHEY_SIMPLEX,  
+                    (957, 1490), cv2.FONT_HERSHEY_SIMPLEX,  
                     1, (0, 0, 0), 2, cv2.LINE_AA)
                 cv2.putText(
                     image,
                     "1",
-                    (1205, 1480), cv2.FONT_HERSHEY_SIMPLEX,  
+                    (1185, 1490), cv2.FONT_HERSHEY_SIMPLEX,  
                     1, (0, 0, 0), 2, cv2.LINE_AA)
 
                 # GT text
                 cv2.putText(
                     image,
                     "Target function:",
-                    (250, 1465), cv2.FONT_HERSHEY_SIMPLEX,  
+                    (230, 1475), cv2.FONT_HERSHEY_SIMPLEX,  
                     1.5, (0, 0, 0), 4, cv2.LINE_AA)
                 cv2.imwrite(f"graphs/graph_{epoch:04}_{i:04}.gv.png", image)
 
@@ -179,23 +179,30 @@ def main():
     graph_image = cv2.imread(last_image_name)
     for c in range(20):
         cv2.imwrite("{}_0_{}.png".format(last_image_name[:-4], c), graph_image)
-    thickness = 5
-    copies = 4
-    cv2.circle(graph_image, (665, 461), 50, (44,44,191), thickness)  # Weight 0
-    cv2.circle(graph_image, (910, 1369), 60, (44,44,191), thickness)  # Weight 0
-    cv2.circle(graph_image, (910, 1449), 60, (199,131,54), thickness)  # Weight 0
+    copies = 6
+    thickness_max = 6
+    for thickness in range(1, thickness_max):
+        cv2.circle(graph_image, (665, 461), 50, (44,44,191), thickness)  # Weight 0
+        cv2.circle(graph_image, (890, 1359), 60, (44,44,191), thickness)  # Weight 0
+        cv2.circle(graph_image, (890, 1459), 60, (199,131,54), thickness)  # Weight 0
+        cv2.imwrite("{}_1_{}.png".format(last_image_name[:-4], thickness), graph_image)
     for c in range(copies):
-        cv2.imwrite("{}_1_{}.png".format(last_image_name[:-4], c), graph_image)
-    cv2.circle(graph_image, (665, 689), 50, (44,44,191), thickness)  # Weight 1
-    cv2.circle(graph_image, (1138, 1369), 60, (44,44,191), thickness)  # Weight 1
-    cv2.circle(graph_image, (1138, 1449), 60, (199,131,54), thickness)  # Weight 1
+        cv2.imwrite("{}_1_{}_{}.png".format(last_image_name[:-4], thickness, c), graph_image)
+    for thickness in range(1, thickness_max):
+        cv2.circle(graph_image, (665, 689), 50, (44,44,191), thickness)  # Weight 1
+        cv2.circle(graph_image, (1118, 1359), 60, (44,44,191), thickness)  # Weight 1
+        cv2.circle(graph_image, (1118, 1459), 60, (199,131,54), thickness)  # Weight 1
+        cv2.imwrite("{}_2_{}.png".format(last_image_name[:-4], thickness), graph_image)
     for c in range(copies):
-        cv2.imwrite("{}_2_{}.png".format(last_image_name[:-4], c), graph_image)
-    cv2.circle(graph_image, (593, 233), 50, (44,44,191), thickness)  # Bias
-    cv2.circle(graph_image, (1367, 1369), 60, (44,44,191), thickness)  # Bias
-    cv2.circle(graph_image, (1367, 1449), 60, (199,131,54), thickness)  # Bias
+        cv2.imwrite("{}_2_{}_{}.png".format(last_image_name[:-4], thickness, c), graph_image)
+    for thickness in range(1, thickness_max):
+        cv2.circle(graph_image, (593, 233), 50, (44,44,191), thickness)  # Bias
+        cv2.circle(graph_image, (1347, 1359), 60, (44,44,191), thickness)  # Bias
+        cv2.circle(graph_image, (1347, 1459), 60, (199,131,54), thickness)  # Bias
+        cv2.imwrite("{}_3_{}.png".format(last_image_name[:-4], thickness), graph_image)
+
     for c in range(40):
-        cv2.imwrite("{}_3_{:02d}.png".format(last_image_name[:-4], c), graph_image)
+        cv2.imwrite("{}_4_{:02d}.png".format(last_image_name[:-4], c), graph_image)
 
 
 main()
