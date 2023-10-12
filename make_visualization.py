@@ -204,5 +204,11 @@ def main():
     for c in range(40):
         cv2.imwrite("{}_4_{:02d}.png".format(last_image_name[:-4], c), graph_image)
 
+    # Add padding to the images
+    for image_path in tqdm(sorted(glob("graphs/*.png"))):
+        image = cv2.imread(image_path)
+        image = cv2.copyMakeBorder(image, 40, 50, 50, 50, cv2.BORDER_CONSTANT, None, value=(255,255,255))
+        cv2.imwrite(image_path, image)
+
 
 main()
