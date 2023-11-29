@@ -1,11 +1,9 @@
 import csv
-import matplotlib.pyplot as plt
 import numpy as np
-from tqdm import tqdm, trange
+from tqdm import tqdm
 
 from loss_functions import CrossEntropyLoss
 from optimizers import GradientDecent
-from draw_graph import Nngraph
 from value import Value
 from activations import ReLU, Softmax
 from base_model import BaseModel
