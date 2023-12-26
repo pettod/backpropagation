@@ -25,3 +25,7 @@ Neural network components implemented here include gradient and backpropagation.
 ### Optimizers
 
 - Gradient decent
+
+![graph](https://github.com/pettod/backpropagation/assets/33998401/622219bd-f0d4-4485-acf7-1f11157d614e)
+
+The code is scalable and trains and draws any fully connected models.
